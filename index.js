@@ -4,68 +4,96 @@ const generateHTML = require('./src/generateHTML');
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const { writeFile, copyFile } = require('./utils/generate-site.js');
 
 
 const managers = [];
 const engineers = [];
 const interns = [];
 
-const employeeQs = [
-    {
-        type: 'input',
-        name: 'name',
-        message: "Please enter the employee's name.",
-        validate: nameInput => {
-            if (nameInput) {
-                return true;
-            } else {
-                console.log('Please enter a name.')
-                return false;
+// const managers = [{
+//     name: 'Jordan',
+//     id: '1',
+//     email: 'jmail',
+//     role: 'Manager',
+//     roleInfo: [ '123456789' ]
+//   }];
+// const engineers = [{
+//     name: 'Jordan',
+//     id: '1',
+//     email: 'jmail',
+//     role: 'Manager',
+//     roleInfo: [ '123456789' ]
+//   }];
+// const interns = [{
+//     name: 'Jordan',
+//     id: '1',
+//     email: 'jmail',
+//     role: 'Manager',
+//     roleInfo: [ '123456789' ]
+//   }];
+
+const startEmployee = () => {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: "Please enter the employee's name.",
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Please enter a name.')
+                    return false;
+                }
             }
-        }
-    },
+        },
 
-    {
-        type: 'input',
-        name: 'id',
-        message: "Please enter the employee's ID.",
-        validate: idInput => {
-            if (idInput) {
-                return true;
-            } else {
-                console.log('Please enter an ID')
-                return false;
+        {
+            type: 'input',
+            name: 'id',
+            message: "Please enter the employee's ID.",
+            validate: idInput => {
+                if (idInput) {
+                    return true;
+                } else {
+                    console.log('Please enter an ID')
+                    return false;
+                }
             }
-        }
-    },
+        },
 
-    {
-        type: 'input',
-        name: 'email',
-        message: "Please enter the employee's email address.",
-        validate: emailInput => {
-            if (emailInput) {
-                return true;
-            } else {
-                console.log('Please enter an email address')
-                return false;
+        {
+            type: 'input',
+            name: 'email',
+            message: "Please enter the employee's email address.",
+            validate: emailInput => {
+                if (emailInput) {
+                    return true;
+                } else {
+                    console.log('Please enter an email address')
+                    return false;
+                }
             }
+        },
+
+        {
+            type: 'list',
+            name: 'role',
+            message: "Please pick the employee's role.",
+            choices: ['Manager', 'Engineer', 'Intern']
         }
-    },
+        ]
+    )
+}; 
 
-    {
-        type: 'list',
-        name: 'role',
-        message: "Please pick the employee's role.",
-        choices: ['Manager', 'Engineer', 'Intern']
-    }
-];
-
-// gets employee info started
-function startEmployee() {
-    console.log(managers, engineers, interns);
-    return inquirer.prompt(employeeQs);
+function getEmployees() {
+    startEmployee()
+    .then(userResponse => {
+        return addRoleInfo(userResponse);
+    }); 
 };
+
 
 // gets last piece of information for each employee type
 addRoleInfo = data => {
@@ -77,8 +105,6 @@ addRoleInfo = data => {
     } else {
         roleInfo = 'school'
     };
-
-    console.log(data);
 
     return inquirer.prompt([
         {
@@ -96,17 +122,31 @@ addRoleInfo = data => {
         }
     ])
     .then(answer => {
-        console.log(data);
-        console.log(answer);
         const value = Object.values(answer);
         data.roleInfo = value;
         createNewEmployee(data);
+    })
+    .then(data => {
+        data = data;
+        return generatePage();
+    })
+    .then(response => {
+        return writeFile(response);
+    })    
+    .then(writeFileResponse => {
+        writeFileResponse;
+        return copyFile();
+    })
+    .then(copyFileResponse => {
+        copyFileResponse;
+    })
+    .catch(err => {
+        console.log(err);
     });
 };
 
 // creates new employee and pushes them to appropriate position array
 function createNewEmployee(data) {
-    console.log(data);
     let newEmployee;
     if (data.role === 'Manager') {
         newEmployee = new Manager(data.name, data.id, data.email, data.roleInfo);
@@ -115,7 +155,7 @@ function createNewEmployee(data) {
         newEmployee = new Engineer(data.name, data.id, data.email, data.roleInfo);
         engineers.push(newEmployee);
     } else {
-        newEmployee = new Intern(data.name, data.id, data.email, data.roleInfo.roleInfo);
+        newEmployee = new Intern(data.name, data.id, data.email, data.roleInfo);
         interns.push(newEmployee);
     };
     
@@ -131,23 +171,14 @@ function createNewEmployee(data) {
         if (userResponse.add === 'Yes') {
             getEmployees();
         } else {
+            console.log('Checkout your index.html file in the dist folder!')
             return userResponse;
         }
     })
 };
 
-// starts new employee if user wants to add another
-// function addOrStop() {
-    
-// }
-
-function getEmployees() {
-    startEmployee()
-    .then(userResponse => {
-        return addRoleInfo(userResponse);
-    });
+const generatePage = () => {
+    return generateHTML(managers, engineers, interns);
 };
 
 getEmployees();
-
-console.log(managers, engineers, interns);

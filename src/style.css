@@ -1,0 +1,28 @@
+body {
+    background-color: lightgreen;
+}
+
+header {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 1,700; 
+    font-size: 5rem;
+    margin: auto;
+    background-color: navy;
+    text-align: center;
+    border-radius: 1em;
+}
+
+.card-header {
+    font-family: 'Ubuntu', sans-serif;
+    background-color: navy;
+    color: white;
+}
+
+.card{
+    box-shadow: 5px 5px rgba(0, 0, 0, .5);
+}
+
+.list {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bold;
+}
