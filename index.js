@@ -11,28 +11,6 @@ const managers = [];
 const engineers = [];
 const interns = [];
 
-// const managers = [{
-//     name: 'Jordan',
-//     id: '1',
-//     email: 'jmail',
-//     role: 'Manager',
-//     roleInfo: [ '123456789' ]
-//   }];
-// const engineers = [{
-//     name: 'Jordan',
-//     id: '1',
-//     email: 'jmail',
-//     role: 'Manager',
-//     roleInfo: [ '123456789' ]
-//   }];
-// const interns = [{
-//     name: 'Jordan',
-//     id: '1',
-//     email: 'jmail',
-//     role: 'Manager',
-//     roleInfo: [ '123456789' ]
-//   }];
-
 const startEmployee = () => {
     return inquirer.prompt([
         {
